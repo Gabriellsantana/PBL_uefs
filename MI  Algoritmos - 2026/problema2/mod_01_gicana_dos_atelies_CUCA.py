@@ -1,8 +1,9 @@
 import os
-from funcao_regras_jogo import mostrar_regras # importando função em aqruivo de funcao_regras_jogo.py secundario 
+import mod_03_funcao_regras_jogo # importando função em aqruivo de funcao_regras_jogo.py secundario 
+import mod_02_menus_secundario
+import mod_04_matrizes
 
-# ===========================================================================
-#funçes e modularização do sistema:
+#Função programa principal
 
 def limpar_tela():#Limpa a tela do terminal de acordo com o sistema operacional
     if os.name == "nt":
@@ -11,12 +12,16 @@ def limpar_tela():#Limpa a tela do terminal de acordo com o sistema operacional
         os.system("clear")
 
 
-# ===========================================================================
+
 #Variaves do programa
 codigo_encerramento = 0.0
 opcao_menu = 0
+acertos = 0
+erros = 0
+casas_cantadas = 0
+rodadas = 0
 
-# ===========================================================================
+
 # O que essa parte faz?
 # Essa parte do código utiliza a função isdigit para verificar se todos os caracteres presentes dentro da variável codigo_encerramento são números e, caso não sejam,o while continuará executando...
 
@@ -52,10 +57,21 @@ while opcao_menu != "3": # laço de repetição para todo menu todo jogo
   
   match opcao_menu:
       case"1":
-          print("ate aqui ok")
+        tamanho, nome = mod_02_menus_secundario.escolha_bancada() #Chamada de Função
+        matriz = mod_04_matrizes.criar_matriz(tamanho)  #Chamada de Função
+
+        print(f"\nBancada escolhida: {nome}")
+        print(f"Tamanho: {tamanho}x{tamanho}")
+        input("\nPrecione [ENTER] para continaur ... . . . . . ")
+    
+        modo = mod_02_menus_secundario.escolher_modo() #Chamada de Função
+
+
+        
+
       case"2":
           limpar_tela()
-          mostrar_regras()
+          mod_03_funcao_regras_jogo.mostrar_regras()
       case"3":
           print("Totem encerrado.. . . .")
       case _:
