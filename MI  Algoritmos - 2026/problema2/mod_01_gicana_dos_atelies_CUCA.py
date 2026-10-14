@@ -32,7 +32,7 @@ codigo_encerramento = input();
 # Continua pedindo o código enquanto ele não tiver apenas números
 while not codigo_encerramento.isdigit():
     # Informa ao usuário que o código digitado é inválido
-    print("\033[31mCódigo inválida. Digite apenas números.\033[0m");
+    print("\033[31mCódigo inválido. Digite apenas números.\033[0m");
      # Pede um novo código
     codigo_encerramento  = input("\nCRIE NOVAMENTE CÓDIGO: ");
     limpar_tela()
@@ -43,7 +43,9 @@ input("\nPrecione [ENTER] para continaur ... . . . . . ")
 limpar_tela()
 
 
-while opcao_menu != "3": # laço de repetição para todo menu todo jogo
+# Essa parte do código  abaixo utiliza  o while e match"case" para manter toda instrutura do jogo rodando em loop que é controlado por um variavel recebida e solicitada ao jogador atrsvaes do menu e o match case direciona o jagador algumas das opções escolhida do menu...
+
+while opcao_menu != "3": # laço de repetição que se repeti até que o 3 seja digitado
   print()
   print("\033[1mBem-vindo GiCanA dOs AtElieS\033[0m".center(50))
 
@@ -62,18 +64,27 @@ while opcao_menu != "3": # laço de repetição para todo menu todo jogo
 
         print(f"\nBancada escolhida: {nome}")
         print(f"Tamanho: {tamanho}x{tamanho}")
-        input("\nPrecione [ENTER] para continaur ... . . . . . ")
     
         modo = mod_02_menus_secundario.escolher_modo() #Chamada de Função
-
-
+      
+        input("\nPrecione [enter] para continaur ... . . . . . \n")
+        mod_04_matrizes.mostra_matriz(matriz)  #Chamada de Função
         
 
       case"2":
           limpar_tela()
           mod_03_funcao_regras_jogo.mostrar_regras()
       case"3":
-          print("Totem encerrado.. . . .")
+          while True:
+           print()
+           encerra = input("Confirme o código:")
+           input("\nPrecione QUALQUER TECLA para continaur ... . . . . . ")
+           limpar_tela()
+           if encerra == codigo_encerramento:
+               print("Totem encerrado.. . . .")
+           else:
+               print("\033[31mCódigo inválido.\033[0m");
+              
       case _:
           print("\033[31mOPÇÃO INVALIDA escolha opoção que esta no menu :)\033[0m");
           

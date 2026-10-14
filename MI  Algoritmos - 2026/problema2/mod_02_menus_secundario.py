@@ -1,7 +1,12 @@
-#arquivo  secundario que sera chamado no arquivo principal cotendo fuções que projeta interface de menus secundario para nivel do jogo no codigo principal
+#arquivo  secundario que sera chamado no arquivo principal
+#Arquivo secundário responsável pelos menus de configuração da partida.
+#As funções deste módulo recebem as escolhas do jogador e retornam
+#as informações necessárias para o programa principal continuar o jogo
 
 
 def escolha_bancada():#fução determina bancada que jogador que ultlizar 
+    # Mantém o menu em repetição para permitir que o jogador corrija
+    #uma escolha inválida sem precisar reiniciar o programa.
     while True:
             print("\nEscolha a bancada para partida:")
             print("\n1 - Bancada de ensaio (6x6)")
@@ -22,12 +27,13 @@ def escolha_bancada():#fução determina bancada que jogador que ultlizar
             else:
                 print("Opção inválida.")
 
-def escolher_modo():# modo de jogo
+def escolher_modo():# Escolehndo modo de jogo advesario no usuario
     while True:
+        
         print("\nModo do adversário:")
-        print("1 - Novato")
-        print("2 - Veterano")
-
+        print("\n1 - Novato")
+        print("2 - Veterano\n")
+         # Recebe a opção como texto, evitando conversões desnecessária                 # e removendo espaços que poderiam invalidar uma entrada correta.
         escolha = input("Opção: ").strip()
 
         if escolha == "1":
