@@ -1,3 +1,4 @@
+
 def mostrar_regras():
     print("\n" + "-" * 60)
     print("                REGRAS - GINCANA DOS ATELIÊS")
@@ -24,4 +25,9 @@ def mostrar_regras():
     print("-30 por olho clínico")
     print("+200 por vitória")
     print("A pontuação mínima é 0.")
-    #print("=" * 60)
+
+def legendas ():
+     print("\nPOSICIONAMENTO DAS SUAS PEÇAS")
+     print("Informe linha, coluna e orientação.")
+     print("L = horizontal (linha) | V = vertical (coluna)")
+     print("Você também pode digitar A para posicionar automaticamente.\n")

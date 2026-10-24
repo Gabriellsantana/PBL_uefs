@@ -5,7 +5,7 @@ def criar_matriz(tamanho):
         linha = []
 
         for j in range(tamanho):
-            linha.append(0)
+            linha.append(" ")
 
         matriz.append(linha)
 
@@ -15,18 +15,19 @@ def criar_matriz(tamanho):
 def mostra_matriz(m_matriz):
     tamanho = len(m_matriz)
 
-    # Mostra os números das colunas
+    # Mostra os números acima  das colunas
     print("   ", end="")
     for coluna in range(1, tamanho + 1):
-        print(f"{coluna:3}", end="") # X 3 espaço de difernça x 
-        
+        print(f"{coluna:5}", end="") # X 3 espaço de difernça x 
+             
     print() 
-    print()
-    # Mostra o número da linha e seus valores
     for i in range(tamanho):
-        print(f"{i + 1:2}->", end="")
+        print(f"{i + 1:2}-> ", end="")
 
         for j in range(tamanho):
-            print(f"{m_matriz[i][j]:3}", end="")
+            print(f"[{m_matriz[i][j]:3}]", end="")
 
         print()
+
+
+        

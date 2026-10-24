@@ -12,21 +12,23 @@ def escolha_bancada():#fução determina bancada que jogador que ultlizar
             print("\n1 - Bancada de ensaio (6x6)")
             print("2 - Bancada de montagem (8x8)")
             print("3 - Bancada de véspera (10x10)\n")
-    
-            escolha = input("Opção: ").strip()
-    
-            if escolha == "1":
+            try:
+             escolha = int(input("Opção: ")) # tratando espaço em braco e  especial 
+           
+             if escolha == 1:
                 return 6, "Ensaio"
     
-            elif escolha == "2":
+             elif escolha == 2:
                 return 8, "Montagem"
     
-            elif escolha == "3":
+             elif escolha == 3:
                 return 10, "Véspera"
+             else:
+                print("Não correspodem a umas das opções entre 1 a 3.")
+            except ValueError:
+             print("Entrada inválida! \033[31mValueError\033[0m. Tente novamente.")
 
-            else:
-                print("Opção inválida.")
-
+             
 def escolher_modo():# Escolehndo modo de jogo advesario no usuario
     while True:
         
