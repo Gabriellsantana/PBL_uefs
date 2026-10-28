@@ -14,7 +14,6 @@ def limpar_tela():#Limpa a tela do terminal de acordo com o sistema operacional
 
 #Variaves do programa
 codigo_encerramento = 0.0
-opcao_menu = 0
 acertos = 0
 erros = 0
 casas_cantadas = 0
@@ -45,6 +44,8 @@ limpar_tela()
 
 # Essa parte código  abaixo utiliza  o while e match"case" para manter toda instrutura do jogo rodando em loop que é controlado por um variavel recebida e solicitada ao jogador atraves  do menu e o match case direciona o jagador algumas das opções escolhida do menu...
 
+
+opcao_menu = 0
 while opcao_menu != "3": # laço de repetição que se repeti enquanto a variavel opcao_menu for diferente de 3
   print()
   print("\033[1mBem-vindo GiCanA dOs AtElieS\033[0m".center(50))
@@ -81,7 +82,7 @@ while opcao_menu != "3": # laço de repetição que se repeti enquanto a variave
         print("--- PREPARAÇÃO DAS PEÇAS ---")
         mod_05_mecanicas.posicionar_pecas_jogador(matriz_real_jogador, tamanho)
 
-        # mod_05_mecanicas.posicionar_pecas_totem(matriz_real_totem, tamanho) 
+        mod_05_mecanicas.posicionar_pecas_automatico(matriz_real_totem, tamanho) 
 
         # Variáveis da partida (LIMPAS E SEM DUPLICAÇÃO)
         pontuacao = 0
@@ -93,10 +94,15 @@ while opcao_menu != "3": # laço de repetição que se repeti enquanto a variave
         while True:
             limpar_tela()
             
-            print(f"--- PONTUAÇÃO: {pontuacao} ---\n".center(40))
-            mod_04_matrizes.mostra_matriz(matriz_rastreio_totem) 
+            print(f"--- PONTUAÇÃO: {pontuacao} ---\n".center(60))
+
+            print("->Bancada Do TOTEM ")
+            mod_04_matrizes.mostra_matriz(matriz_rastreio_totem)
+            print()
+            print("->Bancada Jogador-Play1") 
+            mod_04_matrizes.mostra_matriz(matriz_real_jogador)
             
-            print("\nSUA VEZ!")
+            print("\nSua vez!")
             print("Escolha uma acão\n")
             acao = input(f"[1] Jogar [2] Desistir [3] Olho Clínico ({usos_olho} usos): ")
             
@@ -104,8 +110,8 @@ while opcao_menu != "3": # laço de repetição que se repeti enquanto a variave
                 print("Você desistiu!")
                 # Chama o Ranking para salvar a desistência
                 mod_05_mecanicas.registrar_partida(placar_do_dia, nome, modo, "Desistência", rodadas, pontuacao)
-                partida_rodando = False
-                continue
+                
+                break
                 
             elif acao == '3':
                 if usos_olho > 0:
@@ -118,46 +124,80 @@ while opcao_menu != "3": # laço de repetição que se repeti enquanto a variave
             elif acao == '1':
                 # JOGADA DO JOGADOR
                 try:
-                    linha = int(input(f"\nLinha=[1 a {tamanho}]: "))-1
-                    coluna = int(input(f"Coluna=[1 a {tamanho}]: "))-1
-                    
+                    linha = int(input(f"\nLinha=[1 a {tamanho}]: ")) - 1
+                    coluna = int(input(f"Coluna=[1 a {tamanho}]: ")) - 1
+
+                    # 1. Checa se a posição está dentro do tabuleiro
                     if 0 <= linha < tamanho and 0 <= coluna < tamanho:
-                        # Se não for espaço vazio, é porque acertou uma peça
+
+                        # 2. TRAVA DE CASA REPETIDA: Se já tiver 'X' ou 'o', avisa e não gasta o turno
+                        if matriz_rastreio_totem[linha][coluna] != " ":
+                            print(
+                                "\n\033[33mVocê já cantou essa casa antes! Escolha outra posição.\033[0m"
+                            )
+                            input("Pressione [enter] para tentar de novo...")
+                            continue  # Volta para o início do loop sem passar a vez para o Totem
+
+                        # 3. Se a casa for nova, resolve o tiro
                         if matriz_real_totem[linha][coluna] != " ":
-                            print("BOOOM! Você acertou uma peça!")
+                            print("\nBOOOM! Você acertou uma peça!")
                             matriz_rastreio_totem[linha][coluna] = "X"
                             pontuacao += 10
                         else:
-                            print("Água! Não tinha peça aqui.")
+                            print("\nÁgua! Não tinha peça aqui.")
                             matriz_rastreio_totem[linha][coluna] = "o"
                             pontuacao = max(0, pontuacao - 5)
+
                     else:
-                        print("Coordenada fora da bancada! Perdeu a vez.")
+                        print("\nCoordenada fora da bancada!")
+                        input("Pressione [enter] para tentar de novo...")
+                        continue  # Não gasta o turno se digitou coordenada fora do tabuleiro
+
                 except ValueError:
-                    print("Entrada inválida! Perdeu a vez.")
-                
-                input("Pressione [enter] para o turno do Totem...")
-                
-                # TURNO DO TOTEM (Novato e Veterano)
-                print("\nVEZ DO TOTEM!")
+                    print("\nEntrada inválida! Digite apenas números.")
+                    input("Pressione [enter] para tentar de novo...")
+                    continue  # Não gasta o turno se digitou algo errado
+
+                input("\nPressione [enter] para o turno do Totem...")
+
+                #Momento  do toyem (Novato e Veterano)
+                print("\nVez do TOTEM!")
                 if modo == "Novato":
-                    linha_bancada, coluna_bancada = mod_05_mecanicas.sortear_jogada_novato(matriz_rastreio_jogador)
+                    linha_bancada, coluna_bancada = (
+                        mod_05_mecanicas.sortear_jogada_novato(
+                            matriz_rastreio_jogador
+                        )
+                    )
                 else:
-                    linha_bancada, coluna_bancada = mod_05_mecanicas.sortear_jogada_veterano(matriz_rastreio_jogador, lista_vizinhos_totem)
-                    
+                    linha_bancada, coluna_bancada = (
+                        mod_05_mecanicas.sortear_jogada_veterano(
+                            matriz_rastreio_jogador, lista_vizinhos_totem
+                        )
+                    )
+
                 if linha_bancada != -1:
-                    print(f"O totem atirou na casa ({linha_bancada}, {coluna_bancada})!")
-                     
-                    
-                    if matriz_real_jogador[linha_bancada][coluna_bancada] != " ":
+                    print(
+                        f"O totem escolheu na casa ({linha_bancada + 1}, {coluna_bancada + 1})!"
+                    )
+
+                    # CHECAGEM Só é acerto se NÃO for espaço, NÃO for X e NÃO for o
+                    if matriz_real_jogador[linha_bancada][coluna_bancada] not in [" ", "X", "o"]:
+                        print("\033[31mO Totem acertou uma peça sua!\033[0m")
                         matriz_rastreio_jogador[linha_bancada][coluna_bancada] = "X"
+                        matriz_real_jogador[linha_bancada][coluna_bancada] = "X"
+                        
                         if modo == "Veterano":
-                            mod_05_mecanicas.adicionar_vizinhos(linha_bancada, coluna_bancada, lista_vizinhos_totem)
+                            mod_05_mecanicas.adicionar_vizinhos(
+                                linha_bancada,
+                                coluna_bancada,
+                                lista_vizinhos_totem,
+                            )
                     else:
+                        print("\033[32mO Totem deu água!\033[0m")
                         matriz_rastreio_jogador[linha_bancada][coluna_bancada] = "o"
-                
+                        matriz_real_jogador[linha_bancada][coluna_bancada] = "o"
                 rodadas += 1
-                input("Fim do turno. Pressione [enter] para continuar...")
+                input("\nFim do turno. Pressione [enter] para continuar...")
             else:
                 print("Opção inválida.")
         

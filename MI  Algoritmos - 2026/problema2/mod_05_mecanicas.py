@@ -28,58 +28,62 @@ def validando_posicao_escolhida(matriz,linha,coluna,tamanho_peca,orientacao):
     return True
 
 def posicionar_pecas_jogador(matriz_real_jogador, tamanho):
-    if tamanho == 6:
-        pecas = [["Armadura", 3, "A1"], ["Capa", 2, "C1"], ["Capa", 2, "C2"], ["Elmo", 1, "E1"], ["Elmo", 1, "E2"]]
-    elif tamanho == 8:
-        pecas = [["Par de Asas", 4, "AS1"], ["Armadura", 3, "A1"], ["Capa", 2, "C1"], ["Capa", 2, "C2"], ["Elmo", 1, "E1"], ["Elmo", 1, "E2"]]
-    elif tamanho == 10:
-        pecas = [["Par de Asas", 4, "AS1"], ["Armadura", 3, "A1"], ["Armadura", 3, "A2"], ["Capa", 2, "C1"], ["Capa", 2, "C2"], ["Capa", 2, "C3"], ["Elmo", 1, "E1"], ["Elmo", 1, "E2"], ["Elmo", 1, "E3"], ["Elmo", 1, "E4"]]
+    pecas = obter_lista_pecas(tamanho)
 
-    print("\n[1]posicionar Manualmente [2]espalhar automaticamente: ")
+    print("\n [1] Posicionar Manualmente  [2] Espalhar Automaticamente: ")
     escolha = input("Opção: ").strip()
 
     if escolha == "2":
-        print("Opção automática em breve!")
+        posicionar_pecas_automatico(matriz_real_jogador, tamanho)
+        print(
+            "\n\033[32mSua bancada foi preenchida automaticamente com sucesso!\033[0m"
+        )
         return
 
     for peca in pecas:
         nome_peca = peca[0]
         tamanho_peca = peca[1]
         sigla_peca = peca[2]
-        
-        while True:
-            # 1. MOSTRA A MATRIZ ATUALIZADA PARA O JOGADOR VER
-            print("\nDica: Primeiro escolha posição incial da peça depois o setindo que ela ficara")
-            print("Ex: Casa (1,1) em 'H' ocupará as casas [(1,1),(1,2) e (1,3)] peça inciou na 1,1 e cresceu para direta [x]>+[x]>+[x]")
-            print("[H] para horizontal cresce para a DIREITA [V]  para vertical cresce para BAIXO\n")
 
+        while True:
             print(f"\n--- POSICIONANDO: {nome_peca} ({tamanho_peca} casas) ---")
             mod_04_matrizes.mostra_matriz(matriz_real_jogador)
-            
+
             try:
                 linha = int(input(f"\nLinha inicial (1 a {tamanho}): ")) - 1
                 coluna = int(input(f"Coluna inicial (1 a {tamanho}): ")) - 1
-                orientacao = input("Orientação (H para horizontal, V para vertical): ").upper()
-                
-                # 2. TRAVA DE SEGURANÇA PARA ACEITAR APENAS H OU V
-                if orientacao != "H" and orientacao != "V":
-                    print("\033[31mErro: Digite apenas H ou V para a orientação.\033[0m")
-                    continue # Ignora o resto e pede a mesma peça de novo
-                
-                if validando_posicao_escolhida(matriz_real_jogador, linha, coluna, tamanho_peca, orientacao):
+                orientacao = input(
+                    "Orientação (H para horizontal, V para vertical): "
+                ).upper()
+
+                if orientacao not in ["H", "V"]:
+                    print(
+                        "\033[31mErro: Digite apenas H ou V para a orientação.\033[0m"
+                    )
+                    continue
+
+                if validando_posicao_escolhida(
+                    matriz_real_jogador,
+                    linha,
+                    coluna,
+                    tamanho_peca,
+                    orientacao,
+                ):
                     for i in range(tamanho_peca):
                         if orientacao == "H":
-                            matriz_real_jogador[linha][coluna + i] = sigla_peca 
+                            matriz_real_jogador[linha][coluna + i] = sigla_peca
                         elif orientacao == "V":
                             matriz_real_jogador[linha + i][coluna] = sigla_peca
-                    
                     print(f"\n{nome_peca} posicionada com sucesso!")
-                    break 
+                    break
                 else:
-                    print("\033[31mPosição inválida! Passa da borda ou cai sobre outra peça. Tente de novo.\033[0m")
-                    
+                    print(
+                        "\033[31mPosição inválida! Passa da borda ou cai sobre outra peça.\033[0m"
+                    )
             except ValueError:
-                print("\033[31mEntrada inválida! Digite apenas números para linha e coluna.\033[0m")
+                print(
+                    "\033[31mEntrada inválida! Digite apenas números inteiros.\033[0m"
+                )
 
 def usar_olho_clinico(bancada_real_totem,usos_restantes,pontuacao):
     tamanho = len(bancada_real_totem)
@@ -178,3 +182,81 @@ def exibir_placar(placar):
         for p in placar:
             print(f"{p[0]:<12} | {p[1]:<10} | {p[2]:<12} | {p[3]:<7} | {p[4]}")
     print("=" * 65 + "\n")
+
+    # --- ADICIONE OU ATUALIZE ESTES TRECHOS EM mod_05_mecanicas.py ---
+
+
+def obter_lista_pecas(tamanho):
+    """Retorna a lista de peças padrão de acordo com o tamanho da bancada."""
+    if tamanho == 6:
+        return [
+            ["Armadura", 3, "A1"],
+            ["Capa", 2, "C1"],
+            ["Capa", 2, "C2"],
+            ["Elmo", 1, "E1"],
+            ["Elmo", 1, "E2"],
+        ]
+    elif tamanho == 8:
+        return [
+            ["Par de Asas", 4, "AS1"],
+            ["Armadura", 3, "A1"],
+            ["Capa", 2, "C1"],
+            ["Capa", 2, "C2"],
+            ["Elmo", 1, "E1"],
+            ["Elmo", 1, "E2"],
+        ]
+    elif tamanho == 10:
+        return [
+            ["Par de Asas", 4, "AS1"],
+            ["Armadura", 3, "A1"],
+            ["Armadura", 3, "A2"],
+            ["Capa", 2, "C1"],
+            ["Capa", 2, "C2"],
+            ["Capa", 2, "C3"],
+            ["Elmo", 1, "E1"],
+            ["Elmo", 1, "E2"],
+            ["Elmo", 1, "E3"],
+            ["Elmo", 1, "E4"],
+        ]
+    return []
+
+
+def posicionar_pecas_automatico(matriz_real, tamanho):
+    #Espalha as peças aleatoriamente sem sobreposição e sem ultrapassar bordas.
+    pecas = obter_lista_pecas(tamanho)
+
+    for peca in pecas:
+        tamanho_peca = peca[1]
+        sigla_peca = peca[2]
+
+        posicionou = False
+        while not posicionou:
+            linha = random.randint(0, tamanho - 1)
+            coluna = random.randint(0, tamanho - 1)
+            orientacao = random.choice(["H", "V"])
+
+            if validando_posicao_escolhida(
+                matriz_real, linha, coluna, tamanho_peca, orientacao
+            ):
+                for i in range(tamanho_peca):
+                    if orientacao == "H":
+                        matriz_real[linha][coluna + i] = sigla_peca
+                    elif orientacao == "V":
+                        matriz_real[linha + i][coluna] = sigla_peca
+                posicionou = True
+
+
+def verificar_peca_destruida(matriz_real, matriz_rastreio, linha, coluna):
+
+    #Verifica se a peça atingida na posição (linha, coluna) teve todas as suas casas destruídas.
+    sigla_peca = matriz_real[linha][coluna]
+    tamanho = len(matriz_real)
+    
+    # Percorre toda a bancada á procura de outras casas que pertençam a esta mesma peça
+    for l in range(tamanho):
+        for c in range(tamanho):
+            if matriz_real[l][c] == sigla_peca:
+                # Se encontrar alguma casa desta peça que ainda não tenha 'X', ela ainda não foi destruída
+                if matriz_rastreio[l][c] != "X":
+                    return False
+    return True
