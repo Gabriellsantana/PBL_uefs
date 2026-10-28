@@ -180,22 +180,85 @@ while opcao_menu != "3": # laço de repetição que se repeti enquanto a variave
                         f"O totem escolheu na casa ({linha_bancada + 1}, {coluna_bancada + 1})!"
                     )
 
-                    # CHECAGEM Só é acerto se NÃO for espaço, NÃO for X e NÃO for o
                     if matriz_real_jogador[linha_bancada][coluna_bancada] not in [" ", "X", "o"]:
                         print("\033[31mO Totem acertou uma peça sua!\033[0m")
-                        matriz_rastreio_jogador[linha_bancada][coluna_bancada] = "X"
-                        matriz_real_jogador[linha_bancada][coluna_bancada] = "X"
                         
-                        if modo == "Veterano":
+                        # Marca o X antes de checar se a peça foi destruída
+                        matriz_rastreio_jogador[linha_bancada][coluna_bancada] = "X"
+                        
+                        # Verifica se o Totem destruiu a sua peça por completo
+                        if mod_05_mecanicas.verificar_peca_destruida(matriz_real_jogador, matriz_rastreio_jogador, linha_bancada, coluna_bancada):
+                            print("\033[31mATENÇÃO: O Totem destruiu totalmente uma das suas peças!\033[0m")
+                            if modo == "Veterano":
+                                # Limpa os vizinhos para o Totem voltar a procurar uma nova peça ao acaso
+                                lista_vizinhos_totem.clear()
+                        elif modo == "Veterano":
                             mod_05_mecanicas.adicionar_vizinhos(
                                 linha_bancada,
                                 coluna_bancada,
                                 lista_vizinhos_totem,
                             )
+                            
+                        # Atualiza o símbolo X na bancada do jogador
+                        matriz_real_jogador[linha_bancada][coluna_bancada] = "X"
                     else:
                         print("\033[32mO Totem deu água!\033[0m")
                         matriz_rastreio_jogador[linha_bancada][coluna_bancada] = "o"
                         matriz_real_jogador[linha_bancada][coluna_bancada] = "o"
+
+                        
+                # Checagem do fim da partida e se venceou perdeu
+                total_alvos = mod_05_mecanicas.total_casas_pecas(tamanho)
+                acertos_jogador = mod_05_mecanicas.contar_acertos(
+                    matriz_rastreio_totem
+                )
+                acertos_totem = mod_05_mecanicas.contar_acertos(
+                    matriz_rastreio_jogador
+                )
+
+                #Verificando se jogador venceu
+                if acertos_jogador == total_alvos:
+                    pontuacao += 200  # Bônus de vitória
+                    limpar_tela()
+                    print("\n" + "=" * 50)
+                    print(
+                        "  PARABÉNS! VOCÊ DESTRUIU TODAS AS PEÇAS DO TOTEM!"
+                    )
+                    print(f"   VITÓRIA! Pontuação Final: {pontuacao}")
+                    print("=" * 50 + "\n")
+
+                    mod_05_mecanicas.registrar_partida(
+                        placar_do_dia,
+                        nome,
+                        modo,
+                        "Vitória",
+                        rodadas + 1,
+                        pontuacao,
+                    )
+                    input("Pressione [enter] para ver o resumo...")
+                    break  # Encerra a partida
+
+                # 2. TESTA SE O TOTEM VENCEU
+                elif acertos_totem == total_alvos:
+                    limpar_tela()
+                    print("\n" + "=" * 50)
+                    print(
+                        "  O TOTEM DESTRUIU TODAS AS SUAS PEÇAS! VOCÊ PERDEU."
+                    )
+                    print(f"   DERROTA. Pontuação Final: {pontuacao}")
+                    print("=" * 50 + "\n")
+
+                    mod_05_mecanicas.registrar_partida(
+                        placar_do_dia,
+                        nome,
+                        modo,
+                        "Derrota",
+                        rodadas + 1,
+                        pontuacao,
+                    )
+                    input("Pressione [enter] para ver o resumo...")
+                    break  # Encerra a partida
+
                 rodadas += 1
                 input("\nFim do turno. Pressione [enter] para continuar...")
             else:

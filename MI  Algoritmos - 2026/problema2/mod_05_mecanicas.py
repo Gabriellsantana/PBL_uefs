@@ -260,3 +260,24 @@ def verificar_peca_destruida(matriz_real, matriz_rastreio, linha, coluna):
                 if matriz_rastreio[l][c] != "X":
                     return False
     return True
+
+def total_casas_pecas(tamanho):
+    #Retorna o número total de casas ocupadas por peças de acordo com a bancada.
+    if tamanho == 6:
+        return 9  # 3 + 2 + 2 + 1 + 1
+    elif tamanho == 8:
+        return 13  # 4 + 3 + 2 + 2 + 1 + 1
+    elif tamanho == 10:
+        return 20  # 4 + 3 + 3 + 2 + 2 + 2 + 1 + 1 + 1 + 1
+    return 0
+
+
+def contar_acertos(matriz_rastreio):
+    #Conta quantos 'X' existem na bancada de rastreio.
+    acertos = 0
+    tamanho = len(matriz_rastreio)
+    for l in range(tamanho):
+        for c in range(tamanho):
+            if matriz_rastreio[l][c] == "X":
+                acertos += 1
+    return acertos
