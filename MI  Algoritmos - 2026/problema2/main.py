@@ -1,3 +1,12 @@
+# ==============================================================================
+# UNIVERSIDADE ESTADUAL DE FEIRA DE SANTANA (UEFS)
+# CURSO: ENGENHARIA DE COMPUTAÇÃO
+# DISCIPLINA: EXA854 - MI ALGORITMOS (PROBLEMA 2 - 2026.2)
+# AUTOR: Gabriel Do Nascimento Santana
+# DECLARAÇÃO DE AUTORIA: Declaro que este código foi desenvolvido por mim de
+# forma individual, respeitando todas as regras de autoria do problema.
+# ==============================================================================
+
 import os
 # importando função em aqruivo fora do arquivo main
 import mod_03_regras_jogo 
@@ -42,29 +51,33 @@ input("\nPrecione [ENTER] para continaur ... . . . . . ")
 limpar_tela()
 
 
-# Essa parte código  abaixo utiliza  o while e match"case" para manter toda instrutura do jogo rodando em loop que é controlado por um variavel recebida e solicitada ao jogador atraves  do menu e o match case direciona o jagador algumas das opções escolhida do menu...
-
+# Essa parte código  abaixo utiliza  o while e match"case" para manter toda instrutura do jogo rodando (código prinicipal) em loop que é controlado por um variavel recebida e solicitada ao jogador atraves  do menu e o match case direciona o jagador algumas das opções escolhida do menu...
 
 opcao_menu = 0
-while opcao_menu != "3": # laço de repetição que se repeti enquanto a variavel opcao_menu for diferente de 3
+while opcao_menu != "4": #laço de repetição que se repeti enquanto a variavel opcao_menu for diferente de 3
   print()
   print("\033[1mBem-vindo GiCanA dOs AtElieS\033[0m".center(50))
 
   print()
   print("              [1] JOGAR")
   print("              [2] REGRAS")
-  print("              [3] SAIR")
+  print("              [3] PLACAR")
+  print("              [4] SAIR")
   print() 
-  opcao_menu = input() # solicitando usuario uma  valor do menu ,nesse momento não utilize try excepet para trata exceçoes de entrada põois macth case esta fazendo isso trazendo um reposta  para qualquer dodo digitado fora dos case especeficos 
+  opcao_menu = input() # solicitando usuario uma  valor do menu ,nesse momento não utilize try excepet para trata exceçoes de entrada pois macth case esta fazendo isso trazendo um reposta  para qualquer dado digitado fora dos case especeficos sem quebra o programa
 
   
   match opcao_menu:# caso 1 onde acontece o jogo
       case "1":
+        #seleção da bancada e do modo
         tamanho, nome = mod_02_menus_secundario.escolha_bancada()
-        
-      
-        matriz_real_totem = mod_04_matrizes.criar_matriz(tamanho)
+
+        # CRIAÇÃO DAS BANCTADAS DA PARTIDA
+
+        # Duas matrizes reais (com as peças) e duas de rastreio (com acertos/erros)
+        matriz_real_totem = mod_04_matrizes.criar_matriz(tamanho) 
         matriz_rastreio_totem = mod_04_matrizes.criar_matriz(tamanho) 
+
         matriz_rastreio_jogador = mod_04_matrizes.criar_matriz(tamanho)
         matriz_real_jogador = mod_04_matrizes.criar_matriz(tamanho)
 
@@ -77,25 +90,25 @@ while opcao_menu != "3": # laço de repetição que se repeti enquanto a variave
         print()
         limpar_tela()
 
-         # --- PREPARAÇÃO DAS PEÇAS ---
+        #POSICIONAMENTO DAS PEÇAS
         print()
         print("--- PREPARAÇÃO DAS PEÇAS ---")
         mod_05_mecanicas.posicionar_pecas_jogador(matriz_real_jogador, tamanho)
-
         mod_05_mecanicas.posicionar_pecas_automatico(matriz_real_totem, tamanho) 
 
-        # Variáveis da partida (LIMPAS E SEM DUPLICAÇÃO)
+        #VARIAVEIS DE CONTROLE PARA PARTIDA ATUAL
         pontuacao = 0
         usos_olho = 3
         rodadas = 0
         lista_vizinhos_totem = [] 
         
-        # O laço principal da partida (Substituiu o partida_rodando)
+        #LAÇO DA PARTIDA ATUAL RODANDO 
         while True:
             limpar_tela()
             
             print(f"--- PONTUAÇÃO: {pontuacao} ---\n".center(60))
 
+            # Exibe as duas bancadas na tela em todas as rodadas
             print("->Bancada Do TOTEM ")
             mod_04_matrizes.mostra_matriz(matriz_rastreio_totem)
             print()
@@ -105,46 +118,61 @@ while opcao_menu != "3": # laço de repetição que se repeti enquanto a variave
             print("\nSua vez!")
             print("Escolha uma acão\n")
             acao = input(f"[1] Jogar [2] Desistir [3] Olho Clínico ({usos_olho} usos): ")
-            
+
+            # OPÇÃO 2: DESISTÊNCIA -- DENTRO DO LAÇO DA PARTIDA
             if acao == '2':
                 print("Você desistiu!")
-                # Chama o Ranking para salvar a desistência
+
                 mod_05_mecanicas.registrar_partida(placar_do_dia, nome, modo, "Desistência", rodadas, pontuacao)
-                
-                break
-                
+
+                # Exibe o resumo da partida
+                mod_05_mecanicas.exibir_resumo_partida("Desistência", rodadas, nome, matriz_real_totem, matriz_rastreio_totem, matriz_real_jogador, matriz_rastreio_jogador, usos_olho, pontuacao, tamanho)   
+
+                input("Pressione [enter] para voltar ao menu principal...")          
+                break # Encerra o laço da partida e volta ao menu principal
+
+            #OPÇÃO 3: OLHO CLÍNICO -- DENTRO DO LAÇO DA PARTIDA   
             elif acao == '3':
                 if usos_olho > 0:
                     usos_olho, pontuacao = mod_05_mecanicas.usar_olho_clinico(matriz_real_totem, usos_olho, pontuacao)
                 else:
                     print("Você não tem mais usos do Olho Clínico!")
                 input("Pressione [enter] para continuar...")
-                continue
-                
+                continue #Retorna ao início da escolha 123 sem passar a vez para o Totem
+
+            #OPÇÃO 1: JOGA -- DENTRO DO LAÇO DA PARTIDA   
             elif acao == '1':
-                # JOGADA DO JOGADOR
                 try:
                     linha = int(input(f"\nLinha=[1 a {tamanho}]: ")) - 1
                     coluna = int(input(f"Coluna=[1 a {tamanho}]: ")) - 1
 
-                    # 1. Checa se a posição está dentro do tabuleiro
+                    # Checa se a posição está dentro do tabuleiro/validação de limites lógicos da bancada
                     if 0 <= linha < tamanho and 0 <= coluna < tamanho:
 
-                        # 2. TRAVA DE CASA REPETIDA: Se já tiver 'X' ou 'o', avisa e não gasta o turno
+                        #TRAVA DE CASA REPETIDA: Se já tiver 'X' ou 'o', avisa e não gasta o turno
+                        # Validação de casa já mostrada anteriormente
                         if matriz_rastreio_totem[linha][coluna] != " ":
                             print(
                                 "\n\033[33mVocê já cantou essa casa antes! Escolha outra posição.\033[0m"
                             )
                             input("Pressione [enter] para tentar de novo...")
-                            continue  # Volta para o início do loop sem passar a vez para o Totem
+                            continue  #Volta para o início do loop partida sem passar a vez para o Totem
 
-                        # 3. Se a casa for nova, resolve o tiro
+                        #Resolução da jogada do jogador
                         if matriz_real_totem[linha][coluna] != " ":
-                            print("\nBOOOM! Você acertou uma peça!")
+                            print("\nBuUh! você acertou uma peça :)")
                             matriz_rastreio_totem[linha][coluna] = "X"
                             pontuacao += 10
+
+                            # PEGA O NOME DA PEÇA DESTRUÍDA E EXIBE
+                            peca_destruida = mod_05_mecanicas.verificar_peca_destruida(
+                                matriz_real_totem, matriz_rastreio_totem, linha, coluna
+                            )
+                            if peca_destruida:
+                                print(f"\033[32mPARABÉNS! Você destruiu completamente: {peca_destruida} (+50 pts bônus)!\033[0m")
+                                pontuacao += 50
                         else:
-                            print("\nÁgua! Não tinha peça aqui.")
+                            print("\nÁgua!não tinha peça aqui :(")
                             matriz_rastreio_totem[linha][coluna] = "o"
                             pontuacao = max(0, pontuacao - 5)
 
@@ -156,11 +184,11 @@ while opcao_menu != "3": # laço de repetição que se repeti enquanto a variave
                 except ValueError:
                     print("\nEntrada inválida! Digite apenas números.")
                     input("Pressione [enter] para tentar de novo...")
-                    continue  # Não gasta o turno se digitou algo errado
+                    continue  #Não gasta o turno se digitou algo errado
 
                 input("\nPressione [enter] para o turno do Totem...")
 
-                #Momento  do toyem (Novato e Veterano)
+                #VEZ DO TOTEM (NOVATO/VETERANO-UTOMÁTICO)
                 print("\nVez do TOTEM!")
                 if modo == "Novato":
                     linha_bancada, coluna_bancada = (
@@ -176,87 +204,65 @@ while opcao_menu != "3": # laço de repetição que se repeti enquanto a variave
                     )
 
                 if linha_bancada != -1:
-                    print(
-                        f"O totem escolheu na casa ({linha_bancada + 1}, {coluna_bancada + 1})!"
-                    )
+                    print(f"O totem escolheu na casa ({linha_bancada + 1}, {coluna_bancada + 1}). ")
 
-                    if matriz_real_jogador[linha_bancada][coluna_bancada] not in [" ", "X", "o"]:
+                    if matriz_real_jogador[linha_bancada][coluna_bancada] not in [" ","X", "o"]:
                         print("\033[31mO Totem acertou uma peça sua!\033[0m")
-                        
-                        # Marca o X antes de checar se a peça foi destruída
                         matriz_rastreio_jogador[linha_bancada][coluna_bancada] = "X"
                         
-                        # Verifica se o Totem destruiu a sua peça por completo
-                        if mod_05_mecanicas.verificar_peca_destruida(matriz_real_jogador, matriz_rastreio_jogador, linha_bancada, coluna_bancada):
-                            print("\033[31mATENÇÃO: O Totem destruiu totalmente uma das suas peças!\033[0m")
+                        # 2. VERIFICA SE DESTRUIU A PEÇA JOGADOR
+                        peca_totem = mod_05_mecanicas.verificar_peca_destruida(matriz_real_jogador, matriz_rastreio_jogador, linha_bancada, coluna_bancada)
+                        if peca_totem:
+                            print(f"\033[31mATENÇÃO: O Totem destruiu totalmente seu/sua {peca_totem}!\033[0m")
                             if modo == "Veterano":
-                                # Limpa os vizinhos para o Totem voltar a procurar uma nova peça ao acaso
-                                lista_vizinhos_totem.clear()
+                              lista_vizinhos_totem.clear()
                         elif modo == "Veterano":
-                            mod_05_mecanicas.adicionar_vizinhos(
-                                linha_bancada,
-                                coluna_bancada,
-                                lista_vizinhos_totem,
-                            )
-                            
-                        # Atualiza o símbolo X na bancada do jogador
-                        matriz_real_jogador[linha_bancada][coluna_bancada] = "X"
+                            mod_05_mecanicas.adicionar_vizinhos(linha_bancada,coluna_bancada,lista_vizinhos_totem,)
                     else:
                         print("\033[32mO Totem deu água!\033[0m")
                         matriz_rastreio_jogador[linha_bancada][coluna_bancada] = "o"
-                        matriz_real_jogador[linha_bancada][coluna_bancada] = "o"
 
-                        
-                # Checagem do fim da partida e se venceou perdeu
+                #CHECAGEM DE VITÓRIA E DERROTA
                 total_alvos = mod_05_mecanicas.total_casas_pecas(tamanho)
-                acertos_jogador = mod_05_mecanicas.contar_acertos(
-                    matriz_rastreio_totem
-                )
-                acertos_totem = mod_05_mecanicas.contar_acertos(
-                    matriz_rastreio_jogador
-                )
+                acertos_jogador = mod_05_mecanicas.contar_acertos(matriz_rastreio_totem)
+                acertos_totem = mod_05_mecanicas.contar_acertos( matriz_rastreio_jogador)
 
-                #Verificando se jogador venceu
+                #VERIFICANDO SE JOGADOR VENCEU 
+
+                # Condição de Vitória do Jogador
                 if acertos_jogador == total_alvos:
-                    pontuacao += 200  # Bônus de vitória
+                    pontuacao += 200  #Bônus de vitória
                     limpar_tela()
-                    print("\n" + "=" * 50)
-                    print(
-                        "  PARABÉNS! VOCÊ DESTRUIU TODAS AS PEÇAS DO TOTEM!"
-                    )
+                    print()
+                    print("  PARABÉNS! VOCÊ DESTRUIU TODAS AS PEÇAS DO TOTEM!")
                     print(f"   VITÓRIA! Pontuação Final: {pontuacao}")
-                    print("=" * 50 + "\n")
+                    print()
+                    mod_05_mecanicas.registrar_partida(placar_do_dia, nome, modo, "Vitória", rodadas + 1, pontuacao)
 
-                    mod_05_mecanicas.registrar_partida(
-                        placar_do_dia,
-                        nome,
-                        modo,
-                        "Vitória",
-                        rodadas + 1,
-                        pontuacao,
-                    )
-                    input("Pressione [enter] para ver o resumo...")
+                    input("Pressione [enter] para ver o resumo. . .")
+                    limpar_tela()
+
+                    mod_05_mecanicas.exibir_resumo_partida("Vitória", rodadas + 1, nome, matriz_real_totem,matriz_rastreio_totem, matriz_real_jogador,matriz_rastreio_jogador,usos_olho, pontuacao, tamanho)
+
+                    input("Pressione [enter] para sair. . .")
                     break  # Encerra a partida
 
-                # 2. TESTA SE O TOTEM VENCEU
+                #TESTA SE O TOTEM VENCEU
                 elif acertos_totem == total_alvos:
                     limpar_tela()
-                    print("\n" + "=" * 50)
-                    print(
-                        "  O TOTEM DESTRUIU TODAS AS SUAS PEÇAS! VOCÊ PERDEU."
-                    )
+                    print()
+                    print( "  O TOTEM DESTRUIU TODAS AS SUAS PEÇAS! VOCÊ PERDEU." )
                     print(f"   DERROTA. Pontuação Final: {pontuacao}")
-                    print("=" * 50 + "\n")
+                    print()
 
-                    mod_05_mecanicas.registrar_partida(
-                        placar_do_dia,
-                        nome,
-                        modo,
-                        "Derrota",
-                        rodadas + 1,
-                        pontuacao,
-                    )
+                    mod_05_mecanicas.registrar_partida(placar_do_dia,nome,modo,"Derrota",rodadas + 1,pontuacao,)
+
                     input("Pressione [enter] para ver o resumo...")
+                    limpar_tela()
+    
+                    mod_05_mecanicas.exibir_resumo_partida("Derrota", rodadas + 1, nome,matriz_real_totem,matriz_rastreio_totem, matriz_real_jogador,matriz_rastreio_jogador,usos_olho, pontuacao, tamanho)
+
+                    input("Pressione [enter] para voltar ao menu principal...")
                     break  # Encerra a partida
 
                 rodadas += 1
@@ -265,11 +271,16 @@ while opcao_menu != "3": # laço de repetição que se repeti enquanto a variave
                 print("Opção inválida.")
         
 
-      case"2":#caso 2 regras do mjogo
+      case"2":# REGRAS DO JOGO
           limpar_tela()
+          #EXEBIDNO TEXTO APENAS
           mod_03_regras_jogo.mostrar_regras()
 
-      case"3":# encerrando laço de repetiçao/jogo 
+      case"3":
+           limpar_tela()
+           mod_05_mecanicas.exibir_placar(placar_do_dia)
+           input("Pressione [enter] para voltar ao menu principal...")
+      case"4":# encerrando laço de repetiçao/jogo 
           while True:
            print()
            encerra = input("Confirme o código:")
