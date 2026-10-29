@@ -1,7 +1,5 @@
-#arquivo  secundario que sera chamado no arquivo principal
+#ARQUIVO IMPORTADO NO ARQUIVO PRINCIPAL main.py
 #Arquivo secundário responsável pelos menus de configuração da partida.
-#As funções deste módulo recebem as escolhas do jogador e retornam
-#as informações necessárias para o programa principal continuar o jogo
 
 
 def escolha_bancada():#fução determina bancada que jogador que ultlizar 

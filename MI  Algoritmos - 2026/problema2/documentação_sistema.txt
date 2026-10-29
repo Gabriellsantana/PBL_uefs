@@ -12,7 +12,7 @@ Visão geral  do que estou fazendo
 
 Estrutura dos códidos Módulos: 
 
-usei mod_numero_nome do aqruivo no intuito de organiza por ordem os aqruvio fora da main principal ja que queria  ter acessor ao arquivo de forma mais rapido de forma vizual ja que com numeros consigo manter os arquivo em ordem númerica e simplesmente pelo nome ficaria em ordem alfabetica mais como os nomes são subjetivo ao que quero , não consgeurio mante na ordem que queria
+usei mod_numero_nome do aqruivo no intuito de organiza por ordem os aqruvio fora da main principal ja que queria  ter acessor ao arquivo de forma mais rapido de forma vizual ja que com numeros consigo manter os arquivo em ordem númerica e simplesmente pelo nome ficaria em ordem alfabetica mais como os nomes são subjetivo ao que quero , não conseguria mante na ordem que queria
 
 
 - main.py: ponto de entrada, loop principal do totem, gestão do estado da partida

@@ -1,3 +1,4 @@
+#ARQUIVO IMPORTADO NO ARQUIVO PRINCIPAL main.py
 
 def mostrar_regras():
     print("\n" + "-" * 60)

@@ -7,27 +7,28 @@
 # forma individual, respeitando todas as regras de autoria do problema.
 # ==============================================================================
 
+#IMPORTAÇÕES
 import os
-# importando função em aqruivo fora do arquivo main
 import mod_03_regras_jogo 
 import mod_02_menus_secundario
 import mod_04_matrizes
 import mod_05_mecanicas
 
-#Função 
-def limpar_tela():#Limpa a tela do terminal de acordo com o sistema operacional
-    if os.name == "nt":
-        os.system("cls")
-    else:
-        os.system("clear")
-
-#Variaves do programa
+#VARIAVEIS GLOBAIS
 codigo_encerramento = 0.0
 acertos = 0
 erros = 0
 casas_cantadas = 0
 rodadas = 0
 placar_do_dia = []
+
+#FUNÇOES 
+def limpar_tela():#Limpa a tela do terminal de acordo com o sistema operacional
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
+
 
 #CÓDIDO PRINCIPAL
 
@@ -276,10 +277,11 @@ while opcao_menu != "4": #laço de repetição que se repeti enquanto a variavel
           #EXEBIDNO TEXTO APENAS
           mod_03_regras_jogo.mostrar_regras()
 
-      case"3":
+      case"3":#PLACA DO JOGO 
            limpar_tela()
            mod_05_mecanicas.exibir_placar(placar_do_dia)
            input("Pressione [enter] para voltar ao menu principal...")
+           
       case"4":# encerrando laço de repetiçao/jogo 
           while True:
            print()
