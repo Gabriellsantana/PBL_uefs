@@ -27,8 +27,13 @@ def mostrar_regras():
     print("+200 por vitória")
     print("A pontuação mínima é 0.")
 
-def legendas ():
-     print("\nPOSICIONAMENTO DAS SUAS PEÇAS")
-     print("Informe linha, coluna e orientação.")
-     print("L = horizontal (linha) | V = vertical (coluna)")
-     print("Você também pode digitar A para posicionar automaticamente.\n")
+def legenda_indices():
+     print("\nDica: A posição inicial define onde a peça começa. Na Vertical (V), ela se estende para baixo; na Horizontal (H), para a direita\n")
+     print("Escolha a posição inicial com cuidado e verifique se a peça não vai ultrapassar a borda ao ficar deitada ou em pé.\n")
+     
+def legendas_posição ():
+     print("H = Horizontal (deitada na linha)")
+     print("V = Vertical (em pé na coluna)\n")
+
+def legendas_acerto_erros():
+     print("\nDica: Acerto: x  Erro (Água): o   Pode ser atacada: [ ] \n")

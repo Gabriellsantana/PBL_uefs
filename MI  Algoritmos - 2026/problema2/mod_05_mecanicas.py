@@ -1,6 +1,7 @@
 #ARQUIVO IMPORTADO NO ARQUIVO PRINCIPAL main.py
 import random 
 import mod_04_matrizes  
+import mod_03_regras_jogo 
 
 
 # Validando  a peça cabe na bancada e não fica em cima de outra peça já colocada
@@ -31,8 +32,9 @@ def validando_posicao_escolhida(matriz,linha,coluna,tamanho_peca,orientacao):
 def posicionar_pecas_jogador(matriz_real_jogador, tamanho):
     pecas = obter_lista_pecas(tamanho)
 
-    print("\n [1] Posicionar Manualmente  [2] Espalhar Automaticamente: ")
-    escolha = input("Opção: ").strip()
+    print("\n[1] Posicionar Manualmente:")
+    print("[2] Espalhar Automaticamente:\n ")
+    escolha = input("[opção: ").strip()
 
     if escolha == "2":
         posicionar_pecas_automatico(matriz_real_jogador, tamanho)
@@ -49,13 +51,14 @@ def posicionar_pecas_jogador(matriz_real_jogador, tamanho):
         while True:
             print(f"\n--- POSICIONANDO: {nome_peca} ({tamanho_peca} casas) ---")
             mod_04_matrizes.mostra_matriz(matriz_real_jogador)
-
+            mod_03_regras_jogo.legenda_indices()
             try:
                 linha = int(input(f"\nLinha inicial (1 a {tamanho}): ")) - 1
                 coluna = int(input(f"Coluna inicial (1 a {tamanho}): ")) - 1
-                orientacao = input(
-                    "Orientação (H para horizontal, V para vertical): "
-                ).upper()
+
+                mod_03_regras_jogo.legendas_posição()
+
+                orientacao = input("Orientação (H para horizontal, V para vertical): ").upper()
 
                 if orientacao not in ["H", "V"]:
                     print(
@@ -105,18 +108,19 @@ def usar_olho_clinico(bancada_real_totem,usos_restantes,pontuacao):
             print("Entrada inválida! Digite apenas números inteiros.")
             
     pecas_encontradas = 0
-    linha_inicio = max(0, linha - 1)
-    linha_fim = min(tamanho, linha + 2)
-    coluna_inicio = max(0, coluna - 1)
-    coluna_fim = min(tamanho, coluna + 2)
-    
-    for r in range(linha_inicio, linha_fim):
-        for c in range(coluna_inicio, coluna_fim):
-            if bancada_real_totem[r][c] != " ": # '~' é o espaço vazio
-                pecas_encontradas += 1
+    # Percorre as 3 linhas ao redor da coordenada (cima, meio, baixo)
+    for r in range(linha - 1, linha + 2):
+        #Percorre as 3 colunas ao redor da coordenada (esquerda, meio, direita)
+        for c in range(coluna - 1, coluna + 2):
+            #Valida se as posições existem dentro da matriz antes de ler
+            if 0 <= r < tamanho and 0 <= c < tamanho:
+                if bancada_real_totem[r][c] != " ": 
+                    pecas_encontradas += 1
                 
     usos_restantes -= 1
-    pontuacao = max(0, pontuacao - 30) # Garante que não fica negativo
+    pontuacao -= 30
+    if pontuacao < 0:
+        pontuacao = 0 # Garante que não fica negativo
         
     print(f"\nO Olho Clínico achou {pecas_encontradas} casas ocupadas nessa área!")
     print(f"Penalidade de -30 pontos pontuação atual: {pontuacao}.")
@@ -173,16 +177,23 @@ def registrar_partida(placar, bancada_nome, modo, resultado, rodadas, pontuacao)
     placar.append([bancada_nome, modo, resultado, rodadas, pontuacao])
 
 def exibir_placar(placar):
-
-    print("\n")
+    print()
     print("PLACAR DO DIA".center(65))
     print()
     
     if len(placar) == 0:
         print("Nenhuma partida registrada ainda.".center(65))
     else:
-        # Ordena a lista baseada no índice 4 que é a pontuação
-        placar.sort(key=lambda x: x[4], reverse=True)
+        # Ordenação manual decrescente baseada na pontuação (índice 4)
+        n = len(placar)
+        for i in range(n):
+            for j in range(0, n - i - 1):
+                if placar[j][4] < placar[j + 1][4]:
+                    # Faz a troca de posição na matriz usando uma variável auxiliar
+                    aux = placar[j]
+                    placar[j] = placar[j + 1]
+                    placar[j + 1] = aux
+                    
         print(f"{'Bancada':<12} | {'Modo':<10} | {'Resultado':<12} | {'Rodadas':<7} | {'Pts'}")
         print()
         for p in placar:
@@ -191,7 +202,7 @@ def exibir_placar(placar):
 
 #Retorna a lista oficial com o nome, tamanho e sigla de cada peça de acordo com a bancada escolhida
 def obter_lista_pecas(tamanho):
-    #etorna a lista de peças padrão de acordo com o tamanho da bancada.
+    #retorna a lista de peças padrão de acordo com o tamanho da bancada.
     if tamanho == 6:
         return [
             ["Armadura", 3, "A1"],
@@ -261,14 +272,14 @@ def verificar_peca_destruida(matriz_real, matriz_rastreio, linha, coluna):
                 if matriz_rastreio[l][c] != "X":
                     return None  # Ainda não foi destruída por completo
                     
-    # Retorna o nome da peça para o jogo anunciar na tela
-    if sigla_peca.startswith("A") and not sigla_peca.startswith("AS"):
+    # Retorna o nome da peça usando índices (Lógica segura para o Bate-Bola)
+    if sigla_peca[0] == "A" and sigla_peca[0:2] != "AS":
         return "Armadura"
-    elif sigla_peca.startswith("AS"):
+    elif sigla_peca[0:2] == "AS":
         return "Par de Asas"
-    elif sigla_peca.startswith("C"):
+    elif sigla_peca[0] == "C":
         return "Capa"
-    elif sigla_peca.startswith("E"):
+    elif sigla_peca[0] == "E":
         return "Elmo"
         
     return "Peça"
@@ -297,7 +308,7 @@ def contar_acertos(matriz_rastreio):
 
 #Conta quantas peças da bancada foram completamente destruídas ao longo do jogo
 def contar_pecas_destruidas_total(matriz_real, matriz_rastreio, tamanho):
-    """Conta quantas peças da bancada foram completamente destruídas."""
+     #Conta quantas peças da bancada foram completamente destruídas.
     pecas = obter_lista_pecas(tamanho)
     completadas = 0
 
@@ -316,20 +327,10 @@ def contar_pecas_destruidas_total(matriz_real, matriz_rastreio, tamanho):
 
     return completadas
 
-#Calcula o aproveitamento (%) e exibe a tela de estatísticas com as duas bancadas reveladas por inteiro
-def exibir_resumo_partida(
-    resultado,
-    rodadas,
-    bancada_nome,
-    matriz_real_totem,
-    matriz_rastreio_totem,
-    matriz_real_jogador,
-    matriz_rastreio_jogador,
-    usos_olho,
-    pontuacao,
-    tamanho,
-):
-    #Exibe a tela com o resumo detalhado da partida e revela as duas bancadas por inteiro.
+#Calcula o aproveitamento  e exibe a tela de estatísticas com as duas bancadas reveladas por inteiro
+def exibir_resumo_partida(resultado,rodadas,bancada_nome,matriz_real_totem,matriz_rastreio_totem,matriz_real_jogador,matriz_rastreio_jogador,usos_olho,pontuacao,tamanho):
+
+    #Exibe na tela com o resumo detalhado da partida e revela as duas bancadas por inteiro.
     acertos = contar_acertos(matriz_rastreio_totem)
     erros = 0
 
@@ -339,16 +340,16 @@ def exibir_resumo_partida(
                 erros += 1
 
     casas_cantadas = acertos + erros
-    aproveitamento = (
-        (acertos / casas_cantadas * 100) if casas_cantadas > 0 else 0.0
-    )
 
-    pecas_totem_completadas = contar_pecas_destruidas_total(
-        matriz_real_totem, matriz_rastreio_totem, tamanho
-    )
-    pecas_jogador_completadas = contar_pecas_destruidas_total(
-        matriz_real_jogador, matriz_rastreio_jogador, tamanho
-    )
+    if casas_cantadas > 0:
+      aproveitamento = (acertos / casas_cantadas) * 100
+    else:
+       aproveitamento = 0.0
+
+    pecas_totem_completadas = contar_pecas_destruidas_total(matriz_real_totem, matriz_rastreio_totem, tamanho)
+
+    pecas_jogador_completadas = contar_pecas_destruidas_total(matriz_real_jogador, matriz_rastreio_jogador, tamanho )
+
     usos_olho_gastos = 3 - usos_olho
 
     print("\n" + "-" * 55)

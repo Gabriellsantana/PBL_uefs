@@ -34,7 +34,7 @@ def limpar_tela():#Limpa a tela do terminal de acordo com o sistema operacional
 
 # Essa parte do código utiliza a função isdigit para verificar se todos os caracteres presentes dentro da variável codigo_encerramento são números e, caso não sejam,o while continuará executando...
 
-print("\n[-------Adiministrado do Cuca----------]\n");
+print("\n[-------Administrador. Cuca----------]\n");
 print("CRIE O CÓDIGO DE ENCERRAMENTO: ",end="");
 # Pede ao usuário para criar um código de encerramento
 codigo_encerramento = input();
@@ -48,7 +48,7 @@ while not codigo_encerramento.isdigit():
 # Informa que o código foi aceito
 print("\033[32mCódigo registrado com sucesso\033[0m")
 # Pausa o programa até o usuário pressionar ENTER
-input("\nPrecione [ENTER] para continaur ... . . . . . ")
+input("\nPressione [ENTER] para continuar ... . . . . . ")
 limpar_tela()
 
 
@@ -108,15 +108,17 @@ while opcao_menu != "4": #laço de repetição que se repeti enquanto a variavel
             limpar_tela()
             
             print(f"--- PONTUAÇÃO: {pontuacao} ---\n".center(60))
-
+            
             # Exibe as duas bancadas na tela em todas as rodadas
             print("->Bancada Do TOTEM ")
             mod_04_matrizes.mostra_matriz(matriz_rastreio_totem)
             print()
             print("->Bancada Jogador-Play1") 
+
             mod_04_matrizes.mostra_matriz(matriz_real_jogador)
-            
-            print("\nSua vez!")
+            mod_03_regras_jogo.legendas_acerto_erros()
+
+            print("Sua vez!")
             print("Escolha uma acão\n")
             acao = input(f"[1] Jogar [2] Desistir [3] Olho Clínico ({usos_olho} usos): ")
 
@@ -175,7 +177,9 @@ while opcao_menu != "4": #laço de repetição que se repeti enquanto a variavel
                         else:
                             print("\nÁgua!não tinha peça aqui :(")
                             matriz_rastreio_totem[linha][coluna] = "o"
-                            pontuacao = max(0, pontuacao - 5)
+                            pontuacao -= 5
+                            if pontuacao < 0:
+                                pontuacao = 0
 
                     else:
                         print("\nCoordenada fora da bancada!")

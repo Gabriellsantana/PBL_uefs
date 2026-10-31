@@ -27,7 +27,7 @@ def escolha_bancada():#fução determina bancada que jogador que ultlizar
              print("Entrada inválida! \033[31mValueError\033[0m. Tente novamente.")
 
              
-def escolher_modo():# Escolehndo modo de jogo advesario no usuario
+def escolher_modo():# Escolhendo modo de jogo advesario no usuario
     while True:
         
         print("\nModo do adversário:")

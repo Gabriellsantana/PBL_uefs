@@ -12,100 +12,24 @@ Visão geral  do que estou fazendo
 
 Estrutura dos códidos Módulos: 
 
-usei mod_numero_nome do aqruivo no intuito de organiza por ordem os aqruvio fora da main principal ja que queria  ter acessor ao arquivo de forma mais rapido de forma vizual ja que com numeros consigo manter os arquivo em ordem númerica e simplesmente pelo nome ficaria em ordem alfabetica mais como os nomes são subjetivo ao que quero , não conseguria mante na ordem que queria
+Organização e ModularizaçãoO sistema foi construído de forma modular para isolar responsabilidades e facilitar a manutenção. O nome  dos arquivos utiliza prefixos numéricos mod_02, mod_03, etc. como uma decisão prática de projeto para manter a árvore de arquivos ordenada de acordo com o fluxo lógico de execução.main.py:
+
+ Ponto de entrada. Gerencia o loop do totem, chamadas de menu e o controle de turnos.
+
+ mod_02_menus_secundario.py: Coleta e validação das configurações da partida tamanho da bancada e dificuldade.
+ 
+ mod_03_regras_jogo.py: Isolamento de blocos de texto (regras e legendas) para manter o código principal limpo
+ 
+ .mod_04_matrizes.py: Funções base para inicialização e exibição formatada das grades no terminal.mod_05_mecanicas.py: Core do jogo. Contém a lógica de validação de posições, disparos, IA do Totem, mecânica do "Olho Clínico" e gestão de pontuação.2. Decisões Técnicas e Lógicas ImplementadasGestão de Estado e Matrizes
+
+Para garantir o isolamento das informações e cumprir os requisitos do jogo, cada participante possui duas matrizes (listas de listas) matriz  armazena as siglas das peças ocultas. Matriz de Rastreio: Registra apenas os acertos ('X') e erros ('o').
 
 
-- main.py: ponto de entrada, loop principal do totem, gestão do estado da partida
-  e fluxo entre menus e turnos.
+Controle de Fluxo e Prevenção de Falhas try/except. 
 
-- mod_02_menus_secundario.py: Coleta e validação das escolhas do jogador
-  tamanho de bancada e modo da Totem(Rôbo).
-
-- mod_03_regras_jogo.py: Exibição das instruções e legenda de símbolos.(não a códiogo logico nesse aqruvio além de funções que exiber mensagens inlustratoria 
-
-- mod_04_matrizes.py: Funções puras para criação e exibição gráfica de matrizes no terminal.
-
-- mod_05_mecanicas.py: Toda a regra do jogo (posicionamento de peças,
-  lógica dos disparos, modo  Novato/Veterano, Olho Clínico, pontuação e ranking).
+Isso assegura que entradas inválidas (letras no lugar de números) não encerrem a execução (ValueError), prendendo o fluxo até que uma coordenada válida seja fornecida. Da mesma forma, o uso de continue permite a devolução do turno ao jogador caso ele escolha uma casa já revelada, sem avançar a vez para a máquina.Inteligência Artificial (Modo Veterano)
 
 
-2. Decisões do projeto e desafios para implementação 
+A mecânica de sondagem exige a leitura de uma submatriz . Para evitar o acesso a índices inexistentes (IndexError) nas bordas ou cantos do tabuleiro, a varredura utiliza laços de repetição restritos por condições lógicas rigorosas (if 0 <= r < tamanho and 0 <= c < tamanho). Essa abordagem preventiva validou limites nativamente.Ordenação Manual do Placar
 
-
-A) Por que utilizar 'while True' em determinados pontos?
-
-Embora laços controlados por variáveis booleanas explícitas sejam preferíveis,e por isso esta mantido e sendo ultilzado no laço principal do menu
-
-o uso do 'while True' foi adotado  cenários específicos porque seria o ideal para diminui linhas de código e faciliar a leitura:
-
-1. Garantia de Entrada Válida (Menu e Digitação):
-   Ao solicitar a linha/coluna ou a opção de menu do jogador, o programa não pode
-   travar nem fechar se o usuário digitar uma letra ou um número fora da bancada.
-   O 'while True' combinado com 'try/except' garante que a pergunta se repita
-   indefinidamente até que uma entrada válida seja fornecida.
-
-2. Loop Principal da Partida e Repetição do Turno:
-   Quando o jogador digita uma casa que já havia cantado anteriormente, o sistema
-   deve exibir um aviso e DEVOLVER A VEZ ao jogador sem gastar a rodada e sem
-   permitir que o Totem jogue. O uso do 'continue' dentro do 'while True' permite
-   retornar imediatamente ao topo do loop sem avançar a vez para o Totem.
-   O encerramento do laço ocorre via 'break' assim que a condição de término
-   (Vitória, Derrota ou Desistência) é atingida.
-
-3. Sorteio de Posições Aleatórias:
-   No posicionamento automático das peças (tanto do Totem quanto do Jogador), o
-   programa sorteia coordenadas e orientações (H/V) em loop até encontrar uma
-   posição onde a peça caiba perfeitamente sem sobrepor outra peça existente.
-
-
--Passagem de Matrizes por Referência (Gestão de Estado sem Variáveis Globais)
-Um dos maiores desafios foi gerenciar o estado dos tabuleiros durante o jogo. matrizes (listas de listas) são objetos mutáveis passados por referência entre funções.
-
-Ao criar 'matriz_real_totem' no 'main.py' e passá-la como argumento para a função
-'posicionar_pecas_automatico(matriz_real_totem, tamanho)', qualquer alteração
-feita da matriz dentro da função modifica diretamente a estrutura no
-'main.py'.
-
-
-
--Separação Lógica: Matriz Real vs. Matriz de Rastreio
-Para cada participante existem duas matrizes:
-1. Matriz Real: Armazena a posição oculta das peças (ex: 'A1', 'C1', 'E1').
-2. Matriz de Rastreio: Armazena o que o adversário já descobriu (inicia toda com
-   espaços em branco ' ', marca 'X' para acerto e 'o' para erro).
-
-Essa divisão garante que o jogador nunca enxergue as peças do Totem antes do fim
-da partida, mantendo o elemento surpresa e atendendo rigorosamente ao barema.
-
-
-3. MECÂNICAS COMPLEXAS EXPLICAÇÕES DIDÁTICAS
-------------------------------------------------------------------------------
-
-1. Algoritmo do Adversário Veterano (Caça e Cerca):
-   - O Totem Veterano possui uma lista chamada 'lista_vizinhos_totem'.
-   - Inicialmente a lista está vazia, fazendo o Totem jogar aleatoriamente (modo Novato).
-   - Assim que o Totem atinge uma peça do jogador com 'X', a função 'adicionar_vizinhos'
-     calcula as coordenadas acima, abaixo, à esquerda e à direita do acerto, inserindo
-     apenas as coordenadas válidas dentro do tabuleiro.
-   - Nas rodadas seguintes, enquanto houver coordenadas na lista de vizinhos, o Totem
-     ataca obrigatoriamente essas posições vizinhas.
-   - Se a peça for destruída por completo ou as posições válidas se esgotarem, a lista
-     é limpa ('lista_vizinhos.clear()'), fazendo o Totem voltar ao sorteio aleatório.
-
-2. Olho Clínico (Varredura de Submatriz 3x3):
-   - O jogador escolhe uma coordenada central (linha, coluna) na bancada do Totem.
-   - O algoritmo calcula os limites da janela 3x3 utilizando:
-     linha_inicio = max(0, linha - 1)
-     linha_fim = min(tamanho, linha + 2)
-     coluna_inicio = max(0, coluna - 1)
-     coluna_fim = min(tamanho, coluna + 2)
-   - O uso de 'max' e 'min' impede erros de índice nas bordas e cantos do tabuleiro.
-   - A função conta quantas células nessa submatriz contêm peças de verdade, desconta
-     30 pontos do jogador (com piso fixado em zero) e diminui um uso do recurso.
-
-3. Ordenação do Placar do Dia sem Funções Anônimas:
-   - O placar armazena cada partida jogada como uma lista [Bancada, Modo, Resultado, Rodadas, Pontuação].
-   - Para ordenar o placar da maior para a menor pontuação sem usar sintaxes complexas
-     (como 'lambda'), criou-se a função auxiliar 'pegar_pontuacao(partida)' que retorna
-     o índice 4 da lista. A ordenação é feita com 'placar.sort(key=pegar_pontuacao, reverse=True)'.
-
+O placar contínuo armazena o histórico em matriz, onde o índice [4] representa a pontuação. Para manter a ordenação decrescente sem depender de funções complexas de alto nível, implementou-se um algoritmo de ordenação nativo (Bubble Sort). Através de laços aninhados e uma variável auxiliar, a matriz realiza a troca estrutural completa das linhas, garantindo a exibição do ranking em tempo real.
