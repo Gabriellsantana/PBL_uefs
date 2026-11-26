@@ -8,9 +8,15 @@
 #========================================================================================
 
 #importando classes e modelos de dados
-from modelos import Transacao, Participante, Sistema
+import os
+#from modelos import Transacao, Participante, Sistema
 
-
+#funçoes
+def limpar_tela():#Limpa a tela do terminal de acordo com o sistema operacional
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
 
 
 
@@ -22,7 +28,7 @@ op = -1
 while op!= 0:
     print("\nGAME-CON BAHIA POCKET - SISTEMA DE PAGAMENTOS\n")
     print(""" 
-    [1] Cadastrar participante
+    [1] Cadastrar 
     [2] Registrar transferência
     [3] Consultar histórico e volume de um participante
     [4] Listar participantes por mínimo de transações
