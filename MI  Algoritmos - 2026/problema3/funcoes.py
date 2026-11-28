@@ -8,7 +8,7 @@
 # =======================================================================================
 
 
-# Lê um número inteiro e repete caso o usuário digite letras ou símbolos
+# Le um número inteiro e repete caso o usuário digite letras ou símbolos
 def ler_inteiro(mensagem):
     while True:
         try:
@@ -17,7 +17,7 @@ def ler_inteiro(mensagem):
             print("Entrada inválida! Digite apenas números inteiros.")
 
 
-# Lê um número decimal e repete caso o usuário digite texto inválido
+# Le um número decimal e repete caso o usuário digite texto inválido
 def ler_float(mensagem):
     while True:
         try:
@@ -27,7 +27,7 @@ def ler_float(mensagem):
             print("Entrada inválida! Digite um valor numérico válido (ex: 50.00).")
 
 
-# Lê um nome e repete caso o usuário digite números ou deixe vazio
+# Le um nome e repete caso o usuário digite números ou deixe vazio
 def ler_nome(mensagem):
     while True:
         nome = input(mensagem).strip()
@@ -49,7 +49,7 @@ def cadastrar(sistema):
     print("\n--- CADASTRAR PARTICIPANTE ---")
     id_p = ler_inteiro("Digite o ID numérico: ")
     nome = ler_nome("Digite o nome (fictício): ")
-    tipo = input("Tipo ([1] Visitante | [2] Expositor): ").strip()
+    tipo = input("Você é: [1] Visitante  [2] Expositor: ").strip()
 
     if tipo != "1" and tipo != "2":
         print("Erro: escolha 1 para Visitante ou 2 para Expositor.")
@@ -61,10 +61,10 @@ def cadastrar(sistema):
 
 # Opção [2]: Pede os dados da transferência e envia para o sistema registrar
 def registrar_transferencia(sistema):
-    print("\n--- REGISTRAR TRANSFERÊNCIA ---")
-    pagante = ler_inteiro("ID de quem envia (remetente): ")
-    recebedor = ler_inteiro("ID de quem recebe (destinatário): ")
-    valor = ler_float("Valor da transferência (R$): ")
+    print("\n REGISTRAR TRANSFERÊNCIA $ \n")
+    pagante = ler_inteiro("ID remetente: ")
+    recebedor = ler_inteiro("ID destinatário: ")
+    valor = ler_float("Valor da transferência R$: ")
 
     sucesso, mensagem = sistema.registrar_transacao(pagante, recebedor, valor)
     print(mensagem)
@@ -72,7 +72,7 @@ def registrar_transferencia(sistema):
 
 # Opção [3]: Mostra o histórico e os totais enviado/recebido de um participante
 def historico_e_volume(sistema):
-    print("\n--- HISTÓRICO E VOLUME FINANCEIRO ---")
+    print("\n HISTÓRICO E VOLUME FINANCEIRO\n")
     id_p = ler_inteiro("Digite o ID do participante: ")
     participante = sistema.buscar_usuario(id_p)
 
@@ -111,7 +111,7 @@ def historico_e_volume(sistema):
 
 # Opção [4]: Lista em ordem crescente de ID quem atingiu o mínimo de transações
 def filtrar_participantes(sistema):
-    print("\n--- FILTRAR POR MÍNIMO DE TRANSAÇÕES ---")
+    print("\n FILTRAR POR MÍNIMO DE TRANSAÇÕES \n")
     limite = ler_inteiro("Quantidade mínima de transações: ")
 
     if limite < 0:
@@ -133,7 +133,7 @@ def filtrar_participantes(sistema):
 
 # Opção [5]: Lista todos os participantes cadastrados
 def listar_participantes(sistema):
-    print("\n--- PARTICIPANTES CADASTRADOS ---")
+    print("\nPARTICIPANTES CADASTRADOS\n")
     lista = sistema.listar_usuarios()
 
     if len(lista) == 0:

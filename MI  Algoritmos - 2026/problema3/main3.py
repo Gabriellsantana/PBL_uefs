@@ -25,7 +25,7 @@ def limpar_tela():
 
 
 opcao = ""
-# Laço principal que mantém o menu funcionando até o operador escolher sair
+# Laço principal que mantém o menu funcionando até o operador escolher sair com valor 0
 while opcao != "0":
     print("\n   GAME-CON BAHIA POCKET - SISTEMA DE PAGAMENTOS\n")
 

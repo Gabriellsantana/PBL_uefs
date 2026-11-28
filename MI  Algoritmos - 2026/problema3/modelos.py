@@ -20,11 +20,7 @@ class Participante:
 
     # Converte o objeto em dicionário para conseguir salvar no arquivo JSON
     def para_dicionario(self):
-        return {
-            "id_participante": self.id_participante,
-            "nome": self.nome,
-            "tipo": self.tipo
-        }
+        return {"id_participante": self.id_participante,"nome": self.nome,"tipo": self.tipo}
 
     # Define como o participante aparece quando usamos print()
     def __str__(self):
@@ -61,10 +57,7 @@ class Transacao:
     # Converte o objeto em dicionário para salvar no arquivo JSON
     def para_dicionario(self):
         return {
-            "pagante": self.pagante,
-            "recebedor": self.recebedor,
-            "valor": self.valor
-        }
+            "pagante": self.pagante,"recebedor": self.recebedor,"valor": self.valor}
 
     def __str__(self):
         return f"De ID {self.pagante} para ID {self.recebedor} | Valor: R$ {self.valor:.2f}"
@@ -78,7 +71,7 @@ class Sistema:
         self.arq_participantes = "participantes.json"
         self.arq_transacoes = "transacoes.json"
 
-    # --- CADASTRO E CONSULTA DE PARTICIPANTES ---
+    # CADASTRO E CONSULTA DE PARTICIPANTES 
 
     def cadastrar_usuario(self, id_participante, nome, tipo):
         # Exige ID numérico maior que zero
@@ -92,7 +85,7 @@ class Sistema:
         # Impede nome vazio ou com números/símbolos
         nome_limpo = nome.strip()
         if nome_limpo == "" or not nome_limpo.replace(" ", "").isalpha():
-            return False, "Erro: o nome deve conter apenas letras (sem números)."
+            return False, "Erro: o nome deve conter apenas letras sem números."
 
         # Cria o objeto da classe filha escolhida
         if tipo == "2":
@@ -114,14 +107,14 @@ class Sistema:
     # Retorna uma lista com todos os participantes em ordem numérica crescente de ID
     def listar_usuarios(self):
         ids = list(self.participantes.keys())
-        ids.sort()  # Ordena os números inteiros (ex: ID 2 vem antes do ID 10)
+        ids.sort()  # Ordena os números inteiros ex: ID 2 vem antes do ID 10
 
         lista_ordenada = []
         for id_p in ids:
             lista_ordenada.append(self.participantes[id_p])
         return lista_ordenada
 
-    # --- REGISTRO E LISTAGEM DE TRANSAÇÕES ---
+    #REGISTRO E LISTAGEM DE TRANSAÇÕES 
 
     def registrar_transacao(self, pagante, recebedor, valor):
         # Recusa valores menores ou iguais a zero
@@ -135,7 +128,7 @@ class Sistema:
         if recebedor not in self.participantes:
             return False, "Erro: o destinatário não está cadastrado."
 
-        # Permite pagante == recebedor (autotransferência)
+        # Permite pagante == recebedor autotransferência
         nova = Transacao(pagante, recebedor, valor)
         self.transacoes.append(nova)
         self.salvar_dados()
@@ -144,7 +137,7 @@ class Sistema:
     def listar_transacoes(self):
         return self.transacoes
 
-    # --- HISTÓRICO, VOLUME FINANCEIRO E FREQUÊNCIA ---
+    # HISTÓRICO, VOLUME FINANCEIRO E FREQUÊNCIA 
 
     # Retorna todas as transações de um usuário sem repetir autotransferência
     def consultar_historico(self, id_participante):
@@ -197,7 +190,7 @@ class Sistema:
             resultado.append([self.participantes[id_p], contagem[id_p]])
         return resultado
 
-    # --- PERSISTÊNCIA EM JSON ---
+    #PERSISTÊNCIA EM JSON 
 
     def salvar_dados(self):
         try:
